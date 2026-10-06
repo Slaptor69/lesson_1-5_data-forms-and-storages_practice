@@ -12,43 +12,59 @@ const emailInput = document.querySelector("#participant-email")
 const topicSelect = document.querySelector("#workshop-topic")
 
 // БЛОК 5.1
-// Получите строку из localStorage. Если она существует, вызовите JSON.parse,
-// верните три значения в поля и обновите result и localStorageStatus.
+const savedApplicationJson = localStorage.getItem(STORAGE_KEY)
+
+if (savedApplicationJson) {
+  const savedApplication = JSON.parse(savedApplicationJson)
+  nameInput.value = savedApplication.name
+  emailInput.value = savedApplication.email
+  topicSelect.value = savedApplication.topic
+  result.textContent = "Черновик восстановлен"
+  localStorageStatus.textContent = "Найден сохраненный черновик"
+}
 
 
 // БЛОКИ 1–4
-// 1.2: замените событие click на submit.
-form.addEventListener("click", (event) => {
-  // 1.3: первой строкой остановите стандартное действие формы.
+form.addEventListener("submit", (event) => {
+  event.preventDefault()
 
   console.log("1.2. Получено событие", event.type)
 
-  // 1.3: затем покажите временное сообщение в result.
+  const formData = new FormData(form)
+  const name = formData.get("name")
+  const email = formData.get("email")
+  const topic = formData.get("topic")
+
+  console.log("Имя:", name)
+  console.log("Email:", email)
+  console.log("Тема:", topic)
+
+  result.textContent = `${name}, заявка на тему «${topic}» принята. Подтверждение: ${email}`
 
 
-  // 3.1: создайте FormData текущей формы.
+  const application = {
+    name,
+    email,
+    topic,
+  }
+  const applicationJson = JSON.stringify(application)
+  console.log("Объект заявки:", application)
+  console.log("JSON заявки:", applicationJson)
 
+  localStorage.setItem(STORAGE_KEY, applicationJson)
+  localStorageStatus.textContent = "Черновик сохранен"
 
-  // 3.2: получите name, email и topic через метод get.
-
-
-  // 3.3: проверьте значения в Console и покажите подтверждение в result.
-
-
-  // 4.1: объедините три значения в объект application.
-
-
-  // 4.2: превратите application в строку applicationJson.
-
-
-  // 4.3: сохраните строку в localStorage и обновите localStorageStatus.
-
-
-  // 5.3: сохраните ту же строку в sessionStorage и обновите sessionStorageStatus.
+  sessionStorage.setItem(STORAGE_KEY, applicationJson)
+  sessionStorageStatus.textContent = "Копия существует до закрытия вкладки"
 })
 
 
 // БЛОК 5.2
 clearButton.addEventListener("click", () => {
-  // Удалите обе записи, сбросьте форму и обновите три сообщения на странице.
+  localStorage.removeItem(STORAGE_KEY)
+  sessionStorage.removeItem(STORAGE_KEY)
+  form.reset()
+  result.textContent = "Черновик удален"
+  localStorageStatus.textContent = "Локального черновика нет"
+  sessionStorageStatus.textContent = "Сессионной копии нет"
 })
