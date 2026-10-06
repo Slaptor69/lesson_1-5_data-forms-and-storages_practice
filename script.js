@@ -22,16 +22,16 @@ form.addEventListener("submit", (event) => {
 
   console.log("1.2. Получено событие", event.type)
 
-  result.textContent = "Форма обработана без перезагрузки"
+  const formData = new FormData(form)
+  const name = formData.get("name")
+  const email = formData.get("email")
+  const topic = formData.get("topic")
 
+  console.log("Имя:", name)
+  console.log("Email:", email)
+  console.log("Тема:", topic)
 
-  // 3.1: создайте FormData текущей формы.
-
-
-  // 3.2: получите name, email и topic через метод get.
-
-
-  // 3.3: проверьте значения в Console и покажите подтверждение в result.
+  result.textContent = `${name}, заявка на тему «${topic}» принята. Подтверждение: ${email}`
 
 
   // 4.1: объедините три значения в объект application.
